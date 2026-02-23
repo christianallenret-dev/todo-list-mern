@@ -5,23 +5,43 @@ import Heading from '../components/Heading'
 
 
 function Dashboard() {
-    const [title, setTitle] = useState()
-    const [headings, setHeadings] = useState()
-    const {logout} = useContext(AuthContext)
+    const [title, setTitle] = useState('')
+    const [headings, setHeadings] = useState([])
+    const {logout, token} = useContext(AuthContext)
 
     useEffect(() => {
         fetchHeadings()
     }, [])
 
     const fetchHeadings = async () => {
-        const res = await axios.get('/headings')
-        setHeadings(res.data)
+        try {
+            const res = await axios.get('http://localhost:8000/api/headings',{
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            setHeadings(res.data)
+        } catch (error) {
+            console.error("Failed to fetch headings: ", error)
+        }
     }
 
     const createHeading = async () => {
-        await axios.post('/headings', {title})
-        setTitle('')
-        fetchHeadings()
+
+        if(!title.trim()) return
+        try {
+            await axios.post('http://localhost:8000/api/headings', {title},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            )
+            setTitle('')
+            fetchHeadings()
+        } catch (error) {
+            console.error("Failed to create heading: ", error)
+        }
     }
 
     return(

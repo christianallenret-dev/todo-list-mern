@@ -4,8 +4,6 @@ const jwt = require('jsonwebtoken')
 const crypto = require('crypto')
 const RefreshToken = require('../models/RefreshToken.js')
 
-let refreshTokens = []
-
 // REGISTER
 exports.register = async (req, res) => {
     try {
@@ -55,15 +53,16 @@ exports.login = async (req, res) => {
             { expiresIn: '15m' }                        // expires in 15 minutes
         )
 
-        // Create Refresh Token (long-lived)
+        // REFRESH TOKEN (7 days)
         const refreshToken = jwt.sign(
-            { id: user._id, username: user.username },
-            process.env.REFRESH_TOKEN_SECRET
+            { id: user._id },
+            process.env.REFRESH_TOKEN_SECRET,
+            { expiresIn: '7d' }
         )
 
         // Hash refresh token before saving
         const hashedToken = crypto
-            .createHash('sha216')
+            .createHash('sha256')
             .update(refreshToken)
             .digest('hex')
         
@@ -71,7 +70,7 @@ exports.login = async (req, res) => {
         await RefreshToken.create({
             user: user._id,
             token: hashedToken,
-            expiresIn: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
+            expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
         })
 
         res.json({accessToken, refreshToken})

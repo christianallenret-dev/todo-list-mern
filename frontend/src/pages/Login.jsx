@@ -1,7 +1,7 @@
 import { useContext, useState } from "react"
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import {AuthContext} from "../context/AuthContext.js"
+import {AuthContext} from "../context/AuthContext"
 
 function Login() {
 
@@ -14,7 +14,7 @@ function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        const res = await axios.post('/auth/login', {
+        const res = await axios.post('http://localhost:8000/api/auth/login', {
             username,
             password
         })
