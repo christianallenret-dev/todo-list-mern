@@ -26,7 +26,7 @@ function Login() {
 
     return(
         <form onSubmit={handleSubmit}>
-            <h2>Register</h2>
+            <h2>Login</h2>
 
             <input 
                 placeholder="Username"
