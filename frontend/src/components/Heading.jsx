@@ -1,23 +1,23 @@
-import axios from "axios"
 import { useEffect, useState } from "react"
 import Item from "./Item"
+import instance from "../api/axios"
 
-function Heading() {
+function Heading({heading}) {
 
-    const [items, setItems] = useState()
-    const [text, setText] = useState()
+    const [items, setItems] = useState([])
+    const [text, setText] = useState('')
 
     useEffect(() => {
         fetchItems()
     }, [])
 
     const fetchItems = async () => {
-        const res = await axios.get(`/items/${heading._id}`)
+        const res = await instance.get(`/items/${heading._id}`)
         setItems(res.data)
     }
 
     const addItems = async () => {
-        await axios.post(`/items/${heading._id}`, {text})
+        await instance.post(`/items/${heading._id}`, {text})
         setText('')
         fetchItems()
     }
@@ -36,8 +36,8 @@ function Heading() {
 
             {items.map(i => (
                 <Item
-                    key={i.key}
-                    item={item}
+                    key={i._id}
+                    item={i}
                     refresh={fetchItems}
                 />
             ))}

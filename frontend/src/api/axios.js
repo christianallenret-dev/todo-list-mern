@@ -44,10 +44,7 @@ instance.interceptors.response.use(
 
                 // Send refresh token to backend to get a new access token
                 // This should hit your refresh endpoint
-                const res = await axios.post(
-                    'http://localhost:8000/api/auth/token',
-                    {token: refreshToken}
-                )
+                const res = await instance.post('/auth/token', {token: refreshToken})
 
                 // Save the new access token in localStorage
                 localStorage.setItem('accessToken', res.data.accessToken)

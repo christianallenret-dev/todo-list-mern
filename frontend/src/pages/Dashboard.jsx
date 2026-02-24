@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react"
 import { AuthContext } from "../context/AuthContext"
-import axios from "axios"
 import Heading from '../components/Heading'
+import instance from "../api/axios"
 
 
 function Dashboard() {
@@ -15,11 +15,7 @@ function Dashboard() {
 
     const fetchHeadings = async () => {
         try {
-            const res = await axios.get('http://localhost:8000/api/headings',{
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
+            const res = await instance.get('/headings')
             setHeadings(res.data)
         } catch (error) {
             console.error("Failed to fetch headings: ", error)
@@ -30,13 +26,7 @@ function Dashboard() {
 
         if(!title.trim()) return
         try {
-            await axios.post('http://localhost:8000/api/headings', {title},
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            )
+            await instance.post('/headings', {title})
             setTitle('')
             fetchHeadings()
         } catch (error) {
@@ -59,7 +49,7 @@ function Dashboard() {
 
             {headings.map(h => (
                 <Heading
-                    key={h.id}
+                    key={h._id}
                     heading={h}
                 />
             ))}
